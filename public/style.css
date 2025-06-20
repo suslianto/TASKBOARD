@@ -1,4 +1,4 @@
-/* public/style.css - Desain Bersih, Modern, Inline Add/Edit Task */
+/* public/style.css - Desain Bersih, Modern, Inline Add/Edit Task, Dropdown Styling */
 
 /* --- Import Google Font: Poppins --- */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
@@ -94,6 +94,7 @@ p {
     align-items: center;
     transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 0; /* Hapus padding default agar ikon terpusat sempurna */
 }
 
 .add-task-btn:hover {
@@ -111,8 +112,14 @@ p {
     font-weight: 600; /* Lebih tebal */
     transform: rotate(0deg); /* Pastikan tidak berputar */
     box-shadow: none; /* Hapus bayangan saat menjadi X untuk tampilan lebih datar */
-    /* Mungkin perlu mengatur padding/margin internal jika ada perbedaan karakter */
-    padding: 0; /* Hapus padding default jika ada untuk centering yang lebih baik */
+    padding: 0; /* Pastikan padding juga nol untuk X */
+
+    /* Gaya khusus untuk SVG di dalam tombol X */
+    & svg {
+        width: 1.1em; /* Kontrol ukuran SVG relatif terhadap font-size tombol */
+        height: 1.1em;
+        fill: currentColor; /* Agar SVG mengikuti warna teks tombol */
+    }
 }
 
 .add-task-btn.is-x-icon:hover {
@@ -288,6 +295,47 @@ p {
     margin-bottom: 10px;
     font-weight: 500;
 }
+
+/* --- START DROPDOWN SELECT STYLING --- */
+.inline-select {
+    /* Hapus gaya default browser */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    /* Gaya kustom */
+    width: 100%;
+    padding: 8px 12px; /* Padding lebih banyak */
+    border: 1px solid #ced4da;
+    border-radius: 6px; /* Sudut membulat */
+    background-color: #fff;
+    font-size: 0.95em; /* Ukuran font */
+    color: #343a40;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 15px; /* Jarak bawah */
+
+    /* Tambahkan ikon panah custom */
+    background-image: url('data:image/svg+xml;utf8,<svg fill="#666" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 12px center; /* Posisi panah */
+    background-size: 18px; /* Ukuran panah */
+}
+
+.inline-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.inline-select option {
+    /* Gaya untuk opsi di dalam dropdown (dukungan terbatas di CSS) */
+    background-color: #ffffff;
+    color: #343a40;
+    padding: 5px;
+}
+/* --- END DROPDOWN SELECT STYLING --- */
+
 
 .radio-group { /* Digunakan untuk semua radio groups */
     display: flex;

@@ -278,14 +278,17 @@ function getDragAfterElement(container, y) {
 function setAddButtonIconToX(status) {
     const columnHeader = document.querySelector(`.column[data-status="${status}"] .column-header`);
     const addButton = columnHeader.querySelector('.add-task-btn');
-    addButton.innerHTML = '&#x2715;'; // Unicode 'X'
+    // Menggunakan SVG inline untuk ikon 'X'
+    addButton.innerHTML = `<svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 18L18 6M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`;
     addButton.classList.add('is-x-icon'); // Add a class to style the 'X' button
 }
 
 function resetAddButtonIcon(status) {
     const columnHeader = document.querySelector(`.column[data-status="${status}"] .column-header`);
     const addButton = columnHeader.querySelector('.add-task-btn');
-    addButton.innerHTML = '+';
+    addButton.innerHTML = '+'; // Kembali ke karakter '+'
     addButton.classList.remove('is-x-icon');
 }
 
@@ -297,16 +300,16 @@ function handleClickOutsideOfInlineForm(event) {
         !event.target.classList.contains('edit-options-btn')) {
         
         const formStatus = activeInlineForm.dataset.originalStatus; // Get status from the form itself
+        const formMode = activeInlineForm.dataset.mode; // Get mode of the form
+        
         activeInlineForm.remove();
         activeInlineForm = null;
         document.removeEventListener('click', handleClickOutsideOfInlineForm);
+        
         // Only reset the add button if the active form was an ADD form
-        if (activeInlineForm && activeInlineForm.dataset.mode === 'add') {
-             resetAddButtonIcon(formStatus); // Reset the '+' button icon
-        } else if (!activeInlineForm) { // If no form is active, reset based on the last form's status
-            // This is a fallback if `activeInlineForm` is already null, ensure icon is reset
-            resetAddButtonIcon(formStatus); 
-        }
+        if (formMode === 'add') {
+             resetAddButtonIcon(formStatus); 
+        } 
         renderTasks(); // Re-render to show original card if it was an edit form
     }
 }
@@ -346,16 +349,16 @@ function createAndInsertInlineForm(targetElement, mode, taskData = null) {
             <input type="text" class="inline-title-input" placeholder="What are you working on?" required>
 
             <label class="inline-form-label">Task type</label>
-            <div class="radio-group inline-radio-group">
-                <label><input type="radio" name="inline-task-type" value="bug"> Bug</label>
-                <label><input type="radio" name="inline-task-type" value="feature"> Feature</label>
-                <label><input type="radio" name="inline-task-type" value="refactor"> Refactor</label>
-            </div>
+            <select name="inline-task-type" class="inline-select" required>
+                <option value="feature">Feature</option>
+                <option value="bug">Bug</option>
+                <option value="refactor">Refactor</option>
+            </select>
 
             <label class="inline-form-label">Priority</label>
             <div class="radio-group inline-radio-group">
                 <label><input type="radio" name="inline-task-priority" value="low"> Low</label>
-                <label><input type="radio" name="inline-task-priority" value="medium"> Medium</label>
+                <label><input type="radio" name="inline-task-priority" value="medium" checked> Medium</label>
                 <label><input type="radio" name="inline-task-priority" value="high"> High</label>
             </div>
 
@@ -372,13 +375,13 @@ function createAndInsertInlineForm(targetElement, mode, taskData = null) {
         targetElement.parentNode.replaceChild(inlineFormCard, targetElement);
         // Fill form fields
         inlineFormCard.querySelector('.inline-title-input').value = taskData.title;
-        inlineFormCard.querySelector(`input[name="inline-task-type"][value="${taskData.type}"]`).checked = true;
+        inlineFormCard.querySelector(`select[name="inline-task-type"]`).value = taskData.type; // Set value for select
         inlineFormCard.querySelector(`input[name="inline-task-priority"][value="${taskData.priority}"]`).checked = true;
     } else { // Add mode
         targetElement.prepend(inlineFormCard); // Add to the top of the list
-        // Set default radios for new tasks
-        inlineFormCard.querySelector('input[name="inline-task-type"][value="feature"]').checked = true;
-        inlineFormCard.querySelector('input[name="inline-task-priority"][value="medium"]').checked = true;
+        // Set default values for new tasks
+        inlineFormCard.querySelector(`select[name="inline-task-type"]`).value = 'feature'; // Default for select
+        inlineFormCard.querySelector('input[name="inline-task-priority"][value="medium"]').checked = true; // Default for radio
         setAddButtonIconToX(inlineFormCard.dataset.originalStatus); // Change '+' to 'X' for add mode
     }
 
@@ -391,7 +394,7 @@ function createAndInsertInlineForm(targetElement, mode, taskData = null) {
         e.preventDefault();
 
         const inlineTitle = inlineFormCard.querySelector('.inline-title-input').value.trim();
-        const inlineSelectedType = inlineFormCard.querySelector('input[name="inline-task-type"]:checked')?.value;
+        const inlineSelectedType = inlineFormCard.querySelector(`select[name="inline-task-type"]`).value; // Get value from select
         const inlineSelectedPriority = inlineFormCard.querySelector('input[name="inline-task-priority"]:checked')?.value;
 
         if (!inlineTitle) {
