@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Board</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="style.css"> </head>
+<body>
+    <div class="container">
+        <h1>Task Board</h1>
+        <p>The task board to keep track of your tasks.</p>
+
+        <div class="task-board">
+            <div class="column" id="backlog-column" data-status="Backlog">
+                <div class="column-header">
+                    <h2>Backlog</h2>
+                    <button class="add-task-btn" data-status="Backlog">+</button>
+                </div>
+                <div class="task-list" id="backlog-list"></div>
+            </div>
+
+            <div class="column" id="ongoing-column" data-status="Ongoing">
+                <div class="column-header">
+                    <h2>Ongoing</h2>
+                    <button class="add-task-btn" data-status="Ongoing">+</button>
+                </div>
+                <div class="task-list" id="ongoing-list"></div>
+            </div>
+
+            <div class="column" id="done-column" data-status="Done">
+                <div class="column-header">
+                    <h2>Done</h2>
+                    <button class="add-task-btn" data-status="Done">+</button>
+                </div>
+                <div class="task-list" id="done-list"></div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

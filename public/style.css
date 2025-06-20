@@ -1,0 +1,472 @@
+/* public/style.css - Desain Bersih, Modern, Inline Add/Edit Task */
+
+/* --- Import Google Font: Poppins --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* --- General Styles --- */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    background-color: #f0f2f5;
+    color: #343a40;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+    padding: 30px;
+    max-width: 1300px;
+    margin: 30px auto;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e0e0e0;
+}
+
+h1 {
+    font-size: 2.2em;
+    color: #212529;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+p {
+    font-size: 1em;
+    color: #6c757d;
+    margin-bottom: 25px;
+    border-bottom: 1px dashed #e9ecef;
+    padding-bottom: 15px;
+}
+
+/* --- Task Board Layout --- */
+.task-board {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.column {
+    flex: 1;
+    min-width: 300px;
+    max-width: 380px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.2s ease;
+    border: 1px solid #eff2f5;
+}
+
+.column:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+}
+
+.column-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.column-header h2 {
+    margin: 0;
+    font-size: 1.4em;
+    color: #343a40;
+    font-weight: 500;
+}
+
+.add-task-btn {
+    background-color: #e9ecef;
+    color: #495057;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px; /* Pastikan tinggi dan lebar sama */
+    font-size: 1.8em; /* Ukuran ikon '+' */
+    line-height: 1; /* Penting untuk konsistensi vertikal */
+    cursor: pointer;
+    display: flex; /* Menggunakan flex untuk centering konten */
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.add-task-btn:hover {
+    background-color: #dee2e6;
+    color: #212529;
+    transform: rotate(90deg); /* Efek putar untuk '+' */
+}
+
+/* Style for the 'X' state of the add button */
+.add-task-btn.is-x-icon { /* Menggunakan kelas baru */
+    background-color: #e9ecef; /* Sama seperti background default button */
+    color: #495057; /* Sama seperti warna default teks button */
+    font-size: 1.8em; /* SAMAKAN UKURAN FONT DENGAN + */
+    line-height: 1; /* Penting untuk konsistensi vertikal */
+    font-weight: 600; /* Lebih tebal */
+    transform: rotate(0deg); /* Pastikan tidak berputar */
+    box-shadow: none; /* Hapus bayangan saat menjadi X untuk tampilan lebih datar */
+    /* Mungkin perlu mengatur padding/margin internal jika ada perbedaan karakter */
+    padding: 0; /* Hapus padding default jika ada untuk centering yang lebih baik */
+}
+
+.add-task-btn.is-x-icon:hover {
+    background-color: #dee2e6; /* Hover sama seperti default button */
+    color: #212529;
+    transform: rotate(0deg);
+}
+
+
+.task-list {
+    min-height: 160px;
+    padding-top: 10px;
+    flex-grow: 1;
+    border: 2px dashed transparent;
+    transition: border-color 0.2s ease;
+    border-radius: 8px;
+}
+
+.task-list.drag-over {
+    border-color: #007bff;
+    background-color: rgba(0, 123, 255, 0.03);
+}
+
+/* --- Task Card Styles --- */
+.task-card {
+    background-color: #ffffff;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 12px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    cursor: grab;
+    transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+    display: flex;
+    flex-direction: column;
+}
+
+.task-card:active {
+    cursor: grabbing;
+    transform: translateY(-3px) scale(1.005);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.task-card.dragging {
+    opacity: 0.7;
+    border: 2px dashed #007bff;
+    background-color: #eaf2ff;
+}
+
+.task-card .task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.task-card .task-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.task-card .tag {
+    font-size: 0.7em;
+    padding: 4px 10px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    display: inline-block;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+}
+
+/* Warna dan gaya untuk Tipe Tugas */
+.tag.bug, .tag.high { /* Merah muda untuk BUG dan HIGH */
+    background-color: #f8d7da; /* Warna latar */
+    color: #721c24; /* Warna teks */
+    border: 1px solid #f5c6cb; /* Border halus */
+}
+.tag.feature { background-color: #d1ecf1; color: #0c5460; border: 1px solid #b8daff; } /* Biru muda */
+.tag.refactor { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; } /* Kuning muda */
+
+/* Warna dan gaya untuk Prioritas */
+.tag.low { background-color: #e2e3e5; color: #383d41; border: 1px solid #d6d8db; } /* Abu-abu */
+.tag.medium { background-color: #cce5ff; color: #004085; border: 1px solid #b8daff; } /* Biru sedang */
+
+
+.task-card .task-actions {
+    display: flex;
+    gap: 5px;
+}
+
+/* Tombol Edit/Pengaturan di dalam card (sekarang ikon Gear) */
+.edit-options-btn {
+    background: none;
+    border: none;
+    font-size: 1.4em; /* Ukuran ikon */
+    cursor: pointer;
+    color: #adb5bd; /* Warna abu-abu */
+    padding: 5px; /* Area klik */
+    border-radius: 50%; /* Bulat */
+    transition: background-color 0.2s ease, color 0.2s ease;
+    line-height: 1; /* Pastikan tidak ada spasi ekstra vertikal */
+}
+
+.edit-options-btn:hover {
+    background-color: #f0f0f0;
+    color: #495057;
+}
+
+.task-card h3 {
+    margin: 0;
+    font-size: 1.05em;
+    color: #343a40;
+    font-weight: 500;
+    word-break: break-word;
+    padding-top: 5px;
+}
+
+/* --- Inline Task Forms (Add and Edit) --- */
+.inline-task-form { /* Ini adalah card yang berisi form */
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    animation: slideInFromTop 0.2s ease-out; /* Animasi muncul dari atas */
+    cursor: default; /* Agar tidak ada kursor grab saat form aktif */
+}
+
+@keyframes slideInFromTop {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.inline-form { /* Form di dalam card */
+    display: flex;
+    flex-direction: column;
+}
+
+.inline-title-input {
+    width: 100%;
+    padding: 8px 0;
+    border: none;
+    border-bottom: 1px solid #ced4da;
+    font-size: 1.0em;
+    color: #212529;
+    margin-bottom: 20px;
+    background: transparent;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.inline-title-input:focus {
+    border-color: #007bff;
+}
+
+.inline-title-input::placeholder {
+    color: #adb5bd;
+    font-weight: 300;
+}
+
+.inline-form-label {
+    display: block;
+    font-size: 0.85em;
+    color: #495057;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.radio-group { /* Digunakan untuk semua radio groups */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.9em;
+    color: #343a40;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.radio-group input[type="radio"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ced4da;
+    border-radius: 50%;
+    margin-right: 8px;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.radio-group input[type="radio"]:checked {
+    background-color: #007bff;
+    border-color: #007bff;
+    position: relative;
+}
+
+.radio-group input[type="radio"]:checked::before {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.radio-group input[type="radio"]:focus {
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+/* Radio khusus untuk inline form (sedikit lebih kecil) */
+.inline-radio-group label {
+    font-size: 0.8em;
+}
+
+.inline-radio-group input[type="radio"] {
+    width: 14px;
+    height: 14px;
+}
+.inline-radio-group input[type="radio"]:checked::before {
+    width: 7px;
+    height: 7px;
+}
+
+
+.inline-form-actions {
+    display: flex;
+    justify-content: flex-end; /* Tombol di kanan */
+    gap: 10px; /* Jarak antar tombol */
+    margin-top: 25px;
+}
+
+/* Gaya untuk tombol Cancel di inline form (hanya ada di edit mode) */
+.inline-btn.cancel-btn {
+    background-color: #f8f9fa; /* Latar belakang terang */
+    color: #6c757d; /* Teks abu-abu */
+    border: 1px solid #ced4da; /* Border ringan */
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.inline-btn.cancel-btn:hover {
+    background-color: #e2e3e5;
+    color: #343a40;
+    border-color: #b8c2c9;
+}
+
+/* Gaya untuk tombol Delete di inline form (hanya ada di edit mode) */
+.inline-btn.delete-btn-inline {
+    background-color: #f8d7da; /* Merah muda */
+    color: #721c24; /* Teks merah gelap */
+    border: 1px solid #f5c6cb;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.inline-btn.delete-btn-inline:hover {
+    background-color: #f5c6cb;
+    color: #5d161d;
+    border-color: #e0b0b8;
+}
+
+
+/* Re-use save-btn styling for inline form */
+.inline-form-actions .save-btn {
+    background-color: #212529; /* Latar belakang hitam gelap */
+    color: white;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    font-weight: 500;
+    min-width: unset; /* Hapus min-width dari modal default */
+    width: auto; /* Lebar otomatis */
+}
+
+.inline-form-actions .save-btn:hover {
+    background-color: #343a40;
+    transform: translateY(-1px);
+}
+
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+    .container {
+        margin: 20px;
+        padding: 20px;
+    }
+    h1 {
+        font-size: 1.8em;
+    }
+    p {
+        font-size: 0.9em;
+    }
+    .task-board {
+        flex-direction: column;
+        align-items: center;
+    }
+    .column {
+        min-width: 90%;
+        max-width: 90%;
+        margin-bottom: 20px;
+    }
+    .task-card, .inline-task-form { /* Terapkan juga ke inline form */
+        padding: 12px;
+    }
+    .radio-group, .inline-radio-group {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .inline-form-actions {
+        flex-direction: column-reverse; /* Save di atas, Cancel/Delete di bawah */
+        gap: 8px;
+        align-items: stretch; /* Tombol memanjang penuh */
+    }
+    .inline-form-actions .save-btn,
+    .inline-form-actions .cancel-btn,
+    .inline-form-actions .delete-btn-inline {
+        width: 100%;
+        text-align: center;
+    }
+}
