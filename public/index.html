@@ -3,13 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Board</title>
+    <title>Task Board - Daily History</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
-    <link rel="stylesheet" href="style.css"> </head>
+    <link rel="stylesheet" href="style.css">
+</head>
 <body>
     <div class="container">
         <h1>Task Board</h1>
         <p>The task board to keep track of your tasks.</p>
+
+        <div class="date-navigation">
+            <button id="prev-day-btn">&lt; Prev Day</button>
+            <input type="date" id="current-date-input">
+            <button id="next-day-btn">Next Day &gt;</button>
+            </div>
 
         <div class="task-board">
             <div class="column" id="backlog-column" data-status="Backlog">
@@ -37,6 +44,7 @@
             </div>
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>

@@ -16,10 +16,14 @@
   ],
   "author": "Your Name <your.email@example.com>",
   "license": "ISC",
-  "dependencies": {
-    "express": "^4.19.2"
-  },
+"dependencies": {
+    "express": "^4.x.x",
+    "sequelize": "^6.x.x",  
+    "mysql2": "^3.x.x",    
+    "node-cron": "^3.x.x",
+    "dotenv": "^16.x.x"
+},
   "devDependencies": {
-    "nodemon": "^3.1.4"
+    "nodemon": "^3.1.10"
   }
 }

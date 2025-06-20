@@ -1,4 +1,4 @@
-/* public/style.css - Desain Bersih, Modern, Inline Add/Edit Task, Dropdown Styling */
+/* public/style.css - Desain Bersih, Modern, Inline Add/Edit Task */
 
 /* --- Import Google Font: Poppins --- */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
@@ -38,6 +38,45 @@ p {
     border-bottom: 1px dashed #e9ecef;
     padding-bottom: 15px;
 }
+
+/* --- Date Navigation --- */
+.date-navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+    gap: 15px;
+}
+
+.date-navigation button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease;
+}
+
+.date-navigation button:hover {
+    background-color: #0056b3;
+}
+
+.date-navigation button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.date-navigation input[type="date"] {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9em;
+    cursor: pointer;
+}
+
 
 /* --- Task Board Layout --- */
 .task-board {
@@ -85,45 +124,44 @@ p {
     border: none;
     border-radius: 50%;
     width: 35px;
-    height: 35px; /* Pastikan tinggi dan lebar sama */
-    font-size: 1.8em; /* Ukuran ikon '+' */
-    line-height: 1; /* Penting untuk konsistensi vertikal */
+    height: 35px;
+    font-size: 1.8em;
+    line-height: 1;
     cursor: pointer;
-    display: flex; /* Menggunakan flex untuk centering konten */
+    display: flex;
     justify-content: center;
     align-items: center;
     transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    padding: 0; /* Hapus padding default agar ikon terpusat sempurna */
+    padding: 0;
 }
 
 .add-task-btn:hover {
     background-color: #dee2e6;
     color: #212529;
-    transform: rotate(90deg); /* Efek putar untuk '+' */
+    transform: rotate(90deg);
 }
 
-/* Style for the 'X' state of the add button */
-.add-task-btn.is-x-icon { /* Menggunakan kelas baru */
-    background-color: #e9ecef; /* Sama seperti background default button */
-    color: #495057; /* Sama seperti warna default teks button */
-    font-size: 1.8em; /* SAMAKAN UKURAN FONT DENGAN + */
-    line-height: 1; /* Penting untuk konsistensi vertikal */
-    font-weight: 600; /* Lebih tebal */
-    transform: rotate(0deg); /* Pastikan tidak berputar */
-    box-shadow: none; /* Hapus bayangan saat menjadi X untuk tampilan lebih datar */
-    padding: 0; /* Pastikan padding juga nol untuk X */
+.add-task-btn:disabled {
+    background-color: #f5f5f5;
+    color: #cccccc;
+    cursor: not-allowed;
+    box-shadow: none;
+}
 
-    /* Gaya khusus untuk SVG di dalam tombol X */
-    & svg {
-        width: 1.1em; /* Kontrol ukuran SVG relatif terhadap font-size tombol */
-        height: 1.1em;
-        fill: currentColor; /* Agar SVG mengikuti warna teks tombol */
-    }
+.add-task-btn.is-x-icon {
+    background-color: #e9ecef;
+    color: #495057;
+    font-size: 1.8em;
+    line-height: 1;
+    font-weight: 600;
+    transform: rotate(0deg);
+    box-shadow: none;
+    padding: 0;
 }
 
 .add-task-btn.is-x-icon:hover {
-    background-color: #dee2e6; /* Hover sama seperti default button */
+    background-color: #dee2e6;
     color: #212529;
     transform: rotate(0deg);
 }
@@ -143,6 +181,18 @@ p {
     background-color: rgba(0, 123, 255, 0.03);
 }
 
+/* --- Empty Message Style --- */
+.empty-message {
+    text-align: center;
+    color: #adb5bd;
+    font-style: italic;
+    padding: 20px;
+    margin-top: 30px;
+    background-color: #f0f2f5;
+    border-radius: 8px;
+    font-size: 0.9em;
+}
+
 /* --- Task Card Styles --- */
 .task-card {
     background-color: #ffffff;
@@ -156,6 +206,19 @@ p {
     display: flex;
     flex-direction: column;
 }
+
+.task-card.not-draggable {
+    cursor: not-allowed;
+    opacity: 0.7;
+    background-color: #fdfdfd;
+    box-shadow: none;
+}
+
+.task-card.not-draggable:active {
+    transform: none;
+    box-shadow: none;
+}
+
 
 .task-card:active {
     cursor: grabbing;
@@ -182,7 +245,7 @@ p {
     flex-wrap: wrap;
 }
 
-.task-card .tag {
+.tag {
     font-size: 0.7em;
     padding: 4px 10px;
     border-radius: 5px;
@@ -195,17 +258,40 @@ p {
 }
 
 /* Warna dan gaya untuk Tipe Tugas */
-.tag.bug, .tag.high { /* Merah muda untuk BUG dan HIGH */
-    background-color: #f8d7da; /* Warna latar */
-    color: #721c24; /* Warna teks */
-    border: 1px solid #f5c6cb; /* Border halus */
+.tag.bug, .tag.high {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
 }
-.tag.feature { background-color: #d1ecf1; color: #0c5460; border: 1px solid #b8daff; } /* Biru muda */
-.tag.refactor { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; } /* Kuning muda */
+.tag.feature {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #b8daff;
+}
+.tag.refactor {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+
+/* Style for UNIT tag */
+.tag.unit {
+    background-color: #e6e6fa;
+    color: #4a4a6b;
+    border: 1px solid #dcdceb;
+}
 
 /* Warna dan gaya untuk Prioritas */
-.tag.low { background-color: #e2e3e5; color: #383d41; border: 1px solid #d6d8db; } /* Abu-abu */
-.tag.medium { background-color: #cce5ff; color: #004085; border: 1px solid #b8daff; } /* Biru sedang */
+.tag.low {
+    background-color: #e2e3e5;
+    color: #383d41;
+    border: 1px solid #d6d8db;
+}
+.tag.medium {
+    background-color: #cce5ff;
+    color: #004085;
+    border: 1px solid #b8daff;
+}
 
 
 .task-card .task-actions {
@@ -217,19 +303,26 @@ p {
 .edit-options-btn {
     background: none;
     border: none;
-    font-size: 1.4em; /* Ukuran ikon */
+    font-size: 1.4em;
     cursor: pointer;
-    color: #adb5bd; /* Warna abu-abu */
-    padding: 5px; /* Area klik */
-    border-radius: 50%; /* Bulat */
+    color: #adb5bd;
+    padding: 5px;
+    border-radius: 50%;
     transition: background-color 0.2s ease, color 0.2s ease;
-    line-height: 1; /* Pastikan tidak ada spasi ekstra vertikal */
+    line-height: 1;
 }
 
 .edit-options-btn:hover {
     background-color: #f0f0f0;
     color: #495057;
 }
+
+.edit-options-btn:disabled {
+    color: #e0e0e0;
+    cursor: not-allowed;
+    background: none;
+}
+
 
 .task-card h3 {
     margin: 0;
@@ -241,26 +334,32 @@ p {
 }
 
 /* --- Inline Task Forms (Add and Edit) --- */
-.inline-task-form { /* Ini adalah card yang berisi form */
+.inline-task-form {
     background-color: #ffffff;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     padding: 15px;
     margin-bottom: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     display: flex;
     flex-direction: column;
     position: relative;
-    animation: slideInFromTop 0.2s ease-out; /* Animasi muncul dari atas */
-    cursor: default; /* Agar tidak ada kursor grab saat form aktif */
+    animation: slideInFromTop 0.2s ease-out;
+    cursor: default;
 }
 
 @keyframes slideInFromTop {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.inline-form { /* Form di dalam card */
+.inline-form {
     display: flex;
     flex-direction: column;
 }
@@ -298,29 +397,26 @@ p {
 
 /* --- START DROPDOWN SELECT STYLING --- */
 .inline-select {
-    /* Hapus gaya default browser */
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
 
-    /* Gaya kustom */
     width: 100%;
-    padding: 8px 12px; /* Padding lebih banyak */
+    padding: 8px 12px;
     border: 1px solid #ced4da;
-    border-radius: 6px; /* Sudut membulat */
+    border-radius: 6px;
     background-color: #fff;
-    font-size: 0.95em; /* Ukuran font */
+    font-size: 0.95em;
     color: #343a40;
     cursor: pointer;
     outline: none;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    margin-bottom: 15px; /* Jarak bawah */
+    margin-bottom: 15px;
 
-    /* Tambahkan ikon panah custom */
     background-image: url('data:image/svg+xml;utf8,<svg fill="#666" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
     background-repeat: no-repeat;
-    background-position: right 12px center; /* Posisi panah */
-    background-size: 18px; /* Ukuran panah */
+    background-position: right 12px center;
+    background-size: 18px;
 }
 
 .inline-select:focus {
@@ -329,7 +425,6 @@ p {
 }
 
 .inline-select option {
-    /* Gaya untuk opsi di dalam dropdown (dukungan terbatas di CSS) */
     background-color: #ffffff;
     color: #343a40;
     padding: 5px;
@@ -337,7 +432,7 @@ p {
 /* --- END DROPDOWN SELECT STYLING --- */
 
 
-.radio-group { /* Digunakan untuk semua radio groups */
+.radio-group {
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
@@ -412,16 +507,16 @@ p {
 
 .inline-form-actions {
     display: flex;
-    justify-content: flex-end; /* Tombol di kanan */
-    gap: 10px; /* Jarak antar tombol */
+    justify-content: flex-end;
+    gap: 10px;
     margin-top: 25px;
 }
 
 /* Gaya untuk tombol Cancel di inline form (hanya ada di edit mode) */
 .inline-btn.cancel-btn {
-    background-color: #f8f9fa; /* Latar belakang terang */
-    color: #6c757d; /* Teks abu-abu */
-    border: 1px solid #ced4da; /* Border ringan */
+    background-color: #f8f9fa;
+    color: #6c757d;
+    border: 1px solid #ced4da;
     padding: 8px 18px;
     border-radius: 6px;
     font-size: 0.9em;
@@ -439,8 +534,8 @@ p {
 
 /* Gaya untuk tombol Delete di inline form (hanya ada di edit mode) */
 .inline-btn.delete-btn-inline {
-    background-color: #f8d7da; /* Merah muda */
-    color: #721c24; /* Teks merah gelap */
+    background-color: #f8d7da;
+    color: #721c24;
     border: 1px solid #f5c6cb;
     padding: 8px 18px;
     border-radius: 6px;
@@ -460,7 +555,7 @@ p {
 
 /* Re-use save-btn styling for inline form */
 .inline-form-actions .save-btn {
-    background-color: #212529; /* Latar belakang hitam gelap */
+    background-color: #212529;
     color: white;
     padding: 8px 18px;
     border-radius: 6px;
@@ -468,14 +563,18 @@ p {
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.1s ease;
     font-weight: 500;
-    min-width: unset; /* Hapus min-width dari modal default */
-    width: auto; /* Lebar otomatis */
+    min-width: unset;
+    width: auto;
 }
 
 .inline-form-actions .save-btn:hover {
     background-color: #343a40;
     transform: translateY(-1px);
 }
+
+
+/* --- Modal Styling for Unit Management (REMOVED) --- */
+/* All styles for .modal, .modal-content etc. are removed */
 
 
 /* --- Responsive Adjustments --- */
@@ -499,7 +598,7 @@ p {
         max-width: 90%;
         margin-bottom: 20px;
     }
-    .task-card, .inline-task-form { /* Terapkan juga ke inline form */
+    .task-card, .inline-task-form {
         padding: 12px;
     }
     .radio-group, .inline-radio-group {
@@ -507,14 +606,33 @@ p {
         gap: 8px;
     }
     .inline-form-actions {
-        flex-direction: column-reverse; /* Save di atas, Cancel/Delete di bawah */
+        flex-direction: column-reverse;
         gap: 8px;
-        align-items: stretch; /* Tombol memanjang penuh */
+        align-items: stretch;
     }
     .inline-form-actions .save-btn,
     .inline-form-actions .cancel-btn,
     .inline-form-actions .delete-btn-inline {
         width: 100%;
         text-align: center;
+    }
+    .date-navigation {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .date-navigation button, .date-navigation input {
+        width: calc(50% - 10px);
+        box-sizing: border-box;
+    }
+    /* #manage-units-btn is removed */
+    .modal-content { /* Still needed if there's any other modal in the app */
+        max-width: 95%;
+        padding: 20px;
+    }
+    .add-unit-form { /* Still needed if the form exists but is hidden, but HTML implies it's gone */
+        flex-direction: column;
+    }
+    .add-unit-form input[type="text"], .add-unit-form button {
+        width: 100%;
     }
 }
