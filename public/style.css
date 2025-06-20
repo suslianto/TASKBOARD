@@ -1,4 +1,4 @@
-/* public/style.css - Desain Bersih, Modern, Inline Add/Edit Task */
+/* public/style.css - Desain Bersih, Modern, Header Responsif, Final */
 
 /* --- Import Google Font: Poppins --- */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
@@ -24,9 +24,26 @@ body {
     border: 1px solid #e0e0e0;
 }
 
+/* --- Header Section Styling --- */
+.header-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #e9ecef;
+    gap: 20px;
+}
+
+.main-header-content {
+    flex-grow: 1;
+}
+
 h1 {
     font-size: 2.2em;
     color: #212529;
+    margin-top: 0;
     margin-bottom: 8px;
     font-weight: 600;
 }
@@ -34,47 +51,54 @@ h1 {
 p {
     font-size: 1em;
     color: #6c757d;
-    margin-bottom: 25px;
-    border-bottom: 1px dashed #e9ecef;
-    padding-bottom: 15px;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
 }
 
-/* --- Date Navigation --- */
+/* Date Navigation (Hanya untuk input tanggal) */
 .date-navigation {
     display: flex;
-    justify-content: center;
+    justify-content: center; /* Center the date input */
     align-items: center;
-    margin-bottom: 30px;
-    gap: 15px;
-}
-
-.date-navigation button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.2s ease;
-}
-
-.date-navigation button:hover {
-    background-color: #0056b3;
-}
-
-.date-navigation button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
+    /* No gap needed if only one item or managing layout through other means */
+    flex-shrink: 0;
+    flex-grow: 0; /* Don't let it grow on larger screens */
 }
 
 .date-navigation input[type="date"] {
-    padding: 8px 12px;
+    /* Perbaikan styling input tanggal untuk tampilan bersih */
+    -webkit-appearance: none; /* Remove default styling for Chrome/Safari */
+    -moz-appearance: none; /* Remove default styling for Firefox */
+    appearance: none; /* Remove default styling */
+    background-color: #ffffff; /* Explicit background */
     border: 1px solid #ced4da;
     border-radius: 5px;
+    padding: 7px 10px;
     font-family: 'Poppins', sans-serif;
-    font-size: 0.9em;
+    font-size: 0.85em;
+    color: #343a40;
     cursor: pointer;
+    box-sizing: border-box; /* Include padding/border in width */
+    max-width: 160px; /* Adjust max-width slightly for appearance */
+    text-align: center; /* Center date text */
+    
+    /* Custom icon for date input (calendar icon) */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>');
+    background-repeat: no-repeat;
+    background-position: right 8px center; /* Position calendar icon */
+    background-size: 18px; /* Size calendar icon */
+    padding-right: 30px; /* Make space for the icon */
+}
+
+/* Hide default calendar icon in some browsers (e.g., Edge, IE) */
+.date-navigation input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+}
+.date-navigation input[type="date"]::-webkit-inner-spin-button,
+.date-navigation input[type="date"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 
@@ -573,10 +597,6 @@ p {
 }
 
 
-/* --- Modal Styling for Unit Management (REMOVED) --- */
-/* All styles for .modal, .modal-content etc. are removed */
-
-
 /* --- Responsive Adjustments --- */
 @media (max-width: 768px) {
     .container {
@@ -616,23 +636,14 @@ p {
         width: 100%;
         text-align: center;
     }
-    .date-navigation {
-        flex-wrap: wrap;
-        justify-content: center;
+    .date-navigation { /* Make date nav stack vertically */
+        flex-direction: column; /* Stack items vertically */
+        align-items: stretch; /* Stretch items to full width */
+        gap: 8px; /* Reduce gap */
     }
-    .date-navigation button, .date-navigation input {
-        width: calc(50% - 10px);
-        box-sizing: border-box;
-    }
-    /* #manage-units-btn is removed */
-    .modal-content { /* Still needed if there's any other modal in the app */
-        max-width: 95%;
-        padding: 20px;
-    }
-    .add-unit-form { /* Still needed if the form exists but is hidden, but HTML implies it's gone */
-        flex-direction: column;
-    }
-    .add-unit-form input[type="text"], .add-unit-form button {
-        width: 100%;
+    .date-navigation button, .date-navigation input[type="date"] {
+        width: 100%; /* Full width for buttons and date input */
+        max-width: unset; /* Remove max-width restriction */
+        box-sizing: border-box; /* Include padding/border in width */
     }
 }

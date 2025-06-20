@@ -2,19 +2,12 @@
 const BACKEND_URL = '/api/tasks';
 const BACKEND_UNITS_URL = '/api/units';
 
-let tasks = []; // Global array to hold tasks for the CURRENTLY DISPLAYED day
-let activeInlineForm = null; // To keep track of the currently active inline form (add or edit)
-let availableUnitTypes = []; // Global array to store fetched unit types
+let tasks = [];
+let activeInlineForm = null;
+let availableUnitTypes = [];
 
 
-// --- Date Navigation Elements ---
-const currentDateInput = document.getElementById('current-date-input');
-const prevDayBtn = document.getElementById('prev-day-btn');
-const nextDayBtn = document.getElementById('next-day-btn');
-
-let currentDisplayDate = new Date(); // Stores the date currently being displayed
-
-// --- DOM Elements for Task Board ---
+// --- DOM Elements ---
 const backlogList = document.getElementById('backlog-list');
 const ongoingList = document.getElementById('ongoing-list');
 const doneList = document.getElementById('done-list'); 
@@ -25,6 +18,11 @@ const taskLists = {
     'Done': doneList
 };
 
+const currentDateInput = document.getElementById('current-date-input');
+const prevDayBtn = document.getElementById('prev-day-btn'); // Ini masih ada di script.js
+const nextDayBtn = document.getElementById('next-day-btn'); // Ini masih ada di script.js
+
+let currentDisplayDate = new Date();
 let draggedItem = null;
 
 
@@ -65,107 +63,15 @@ function displayEmptyMessage(listElement, columnName) {
 }
 
 
-// --- Render Functions ---
-function createTaskCard(task) {
-    const card = document.createElement('div');
-    card.classList.add('task-card');
-    if (formatDateToYYYYMMDD(currentDisplayDate) === formatDateToYYYYMMDD(new Date())) {
-        card.setAttribute('draggable', true);
-    } else {
-        card.setAttribute('draggable', false);
-        card.classList.add('not-draggable');
-    }
-    
-    card.dataset.id = task.id;
-    card.dataset.status = task.status;
+// --- API Interaction Functions (Dipindah ke atas untuk menghindari ReferenceError) ---
 
-    card.innerHTML = `
-        <div class="task-header">
-            <div class="task-tags">
-                <span class="tag ${getTagColorClass(task.type, true)}">${task.type}</span>
-                <span class="tag ${getTagColorClass(task.priority, false)}">${task.priority}</span>
-            </div>
-            <div class="task-actions">
-                <button class="edit-options-btn" data-id="${task.id}">⚙</button>
-            </div>
-        </div>
-        <h3>${task.title}</h3>
-    `;
-
-    if (card.getAttribute('draggable') === 'true') {
-        card.addEventListener('dragstart', handleDragStart);
-        card.addEventListener('dragend', handleDragEnd);
-    }
-
-    const editButton = card.querySelector('.edit-options-btn');
-    if (formatDateToYYYYMMDD(currentDisplayDate) === formatDateToYYYYMMDD(new Date())) {
-        editButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            openInlineEditTask(task);
-        });
-        editButton.removeAttribute('disabled');
-    } else {
-        editButton.setAttribute('disabled', 'true');
-        editButton.classList.add('disabled-icon');
-    }
-
-    return card;
-}
-
-function renderTasks() {
-    backlogList.innerHTML = '';
-    ongoingList.innerHTML = '';
-    doneList.innerHTML = ''; 
-
-    const isDisplayingToday = formatDateToYYYYMMDD(currentDisplayDate) === formatDateToYYYYMMDD(new Date());
-
-    ['Backlog', 'Ongoing', 'Done'].forEach(columnName => {
-        const listElement = taskLists[columnName];
-        const tasksInColumn = tasks.filter(task => task.status === columnName);
-        let hasVisibleTaskCards = false;
-        
-        if (isDisplayingToday && activeInlineForm && activeInlineForm.parentNode && activeInlineForm.dataset.originalStatus === columnName) {
-            listElement.prepend(activeInlineForm);
-        }
-
-        tasksInColumn.forEach(task => {
-            const isBeingEdited = activeInlineForm && activeInlineForm.dataset.mode === 'edit' && activeInlineForm.dataset.id === task.id;
-            if (!isBeingEdited) {
-                listElement.appendChild(createTaskCard(task));
-                hasVisibleTaskCards = true;
-            }
-        });
-
-        const isInlineAddFormActiveInThisColumn = isDisplayingToday && activeInlineForm && activeInlineForm.dataset.mode === 'add' && activeInlineForm.dataset.originalStatus === columnName;
-
-        if (!hasVisibleTaskCards && !isInlineAddFormActiveInThisColumn) {
-            displayEmptyMessage(listElement, columnName);
-        }
-
-        const addButton = listElement.closest('.column').querySelector('.add-task-btn');
-        if (isDisplayingToday) {
-            addButton.removeAttribute('disabled');
-            if (isInlineAddFormActiveInThisColumn) {
-                setAddButtonIconToX(columnName);
-            } else {
-                resetAddButtonIcon(columnName);
-            }
-        } else {
-            addButton.setAttribute('disabled', 'true');
-            resetAddButtonIcon(columnName);
-        }
-    });
-}
-
-// --- API Interactions ---
-// Function to fetch available unit types from backend
 async function fetchUnitTypes() {
     console.log('[API Call] Fetching unit types...');
     try {
         const response = await fetch(BACKEND_UNITS_URL);
         console.log(`[API Call] Units API response status: ${response.status}`);
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            throw new Error(`HTTP error! status: ${response.status} from ${BACKEND_UNITS_URL}`);
         }
         const fetchedUnits = await response.json();
         console.log('[API Call] Fetched units:', fetchedUnits);
@@ -205,7 +111,6 @@ async function fetchUnitTypes() {
     }
 }
 
-// Function to fetch tasks for a specific date (or current day)
 async function fetchTasksForDate(date) {
     const dateString = formatDateToYYYYMMDD(date);
     let url = `${BACKEND_URL}/current`;
@@ -268,14 +173,13 @@ async function addTask(taskData, inlineFormElement) {
         renderTasks();
         return;
     }
-    console.log('[API Call] Adding task:', taskData);
+
     try {
         const response = await fetch(`${BACKEND_URL}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(taskData)
         });
-        console.log(`[API Call] Add task API response status: ${response.status}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} from POST /api/tasks`);
         }
@@ -288,7 +192,7 @@ async function addTask(taskData, inlineFormElement) {
             document.removeEventListener('click', handleClickOutsideOfInlineForm);
         }
         resetAddButtonIcon(newTask.status);
-        await fetchTasksForDate(currentDisplayDate); // Re-fetch for synchronization
+        await fetchTasksForDate(currentDisplayDate); 
     } catch (error) {
         console.error('Error adding task:', error);
         alert('Failed to add task.');
@@ -305,14 +209,13 @@ async function updateTask(taskId, taskData, inlineFormElement) {
         renderTasks();
         return;
     }
-    console.log(`[API Call] Updating task ${taskId}:`, taskData);
+
     try {
         const response = await fetch(`${BACKEND_URL}/${taskId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(taskData)
         });
-        console.log(`[API Call] Update task API response status: ${response.status}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} from PUT /api/tasks/${taskId}`);
         }
@@ -324,7 +227,7 @@ async function updateTask(taskId, taskData, inlineFormElement) {
             activeInlineForm = null;
             document.removeEventListener('click', handleClickOutsideOfInlineForm);
         }
-        await fetchTasksForDate(currentDisplayDate); // Re-fetch for synchronization
+        await fetchTasksForDate(currentDisplayDate);
     } catch (error) {
         console.error('Error updating task:', error);
         alert('Failed to update task.');
@@ -349,12 +252,11 @@ async function updateTaskStatus(taskId, newStatus) {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status} from PUT /api/tasks/${taskId}/status`);
         }
-        // No need to update local 'tasks' array directly here, fetchTasksForDate will re-sync
-        await fetchTasksForDate(currentDisplayDate); // Re-fetch for synchronization
+        await fetchTasksForDate(currentDisplayDate);
     } catch (error) {
         console.error('Error updating task status:', error);
         alert('Failed to update task status.');
-        renderTasks(); // Revert visual change on client if API fails
+        renderTasks();
     }
 }
 
@@ -388,7 +290,7 @@ async function deleteTask(taskId) {
             activeInlineForm = null;
             document.removeEventListener('click', handleClickOutsideOfInlineForm);
         }
-        await fetchTasksForDate(currentDisplayDate); // Re-fetch for synchronization
+        await fetchTasksForDate(currentDisplayDate);
     } catch (error) {
         console.error('Error deleting task:', error);
         alert('Failed to delete task.');
@@ -762,33 +664,25 @@ function openInlineEditTask(taskData) {
 function updateDateDisplay() {
     currentDateInput.value = formatDateToYYYYMMDD(currentDisplayDate);
 
-    // Disable/enable Prev/Next buttons based on date
+    // Disable/enable Prev/Next buttons based on date (buttons removed, but logic can stay if ever re-added)
     const today = new Date();
     today.setHours(0,0,0,0);
     const displayDateNormalized = new Date(currentDisplayDate);
     displayDateNormalized.setHours(0,0,0,0);
 
-    prevDayBtn.removeAttribute('disabled');
-
-    if (displayDateNormalized.getTime() >= today.getTime()) {
-        nextDayBtn.setAttribute('disabled', 'true');
-    } else {
-        nextDayBtn.removeAttribute('disabled');
-    }
+    // prevDayBtn.removeAttribute('disabled'); // Removed button
+    // if (displayDateNormalized.getTime() >= today.getTime()) {
+    //     nextDayBtn.setAttribute('disabled', 'true'); // Removed button
+    // } else {
+    //     nextDayBtn.removeAttribute('disabled'); // Removed button
+    // }
 
     fetchTasksForDate(currentDisplayDate);
 }
 
 // Event Listeners for Date Navigation
-prevDayBtn.addEventListener('click', () => {
-    currentDisplayDate.setDate(currentDisplayDate.getDate() - 1);
-    updateDateDisplay();
-});
-
-nextDayBtn.addEventListener('click', () => {
-    currentDisplayDate.setDate(currentDisplayDate.getDate() + 1);
-    updateDateDisplay();
-});
+// prevDayBtn.addEventListener('click', () => { ... }); // Removed button
+// nextDayBtn.addEventListener('click', () => { ... }); // Removed button
 
 currentDateInput.addEventListener('change', (e) => {
     currentDisplayDate = new Date(e.target.value);

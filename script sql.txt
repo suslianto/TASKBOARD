@@ -1,0 +1,57 @@
+-- ====================================================================================================
+-- SQL script for MySQL database setup
+-- ====================================================================================================
+
+-- 1. Create the database (if it doesn't exist)
+--    WARNING: DROP DATABASE will delete ALL data from database if it exists.
+DROP DATABASE IF EXISTS `taskboard_daily_mysql`;
+CREATE DATABASE IF NOT EXISTS `taskboard_daily_mysql`
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_0900_ai_ci;
+
+-- 2. Use the database
+USE `taskboard_daily_mysql`;
+
+-- 3. Create the 'tasks' table
+CREATE TABLE IF NOT EXISTS `tasks` (
+    `id` VARCHAR(255) NOT NULL,            -- Task ID (from generateUniqueId in JS)
+    `title` VARCHAR(255) NOT NULL,         -- Task title
+    `status` VARCHAR(255) NOT NULL,        -- Task status (e.g., 'Backlog', 'Ongoing', 'Done')
+    `type` VARCHAR(255) NOT NULL,          -- Task type (e.g., 'UNIT 1', 'UNIT 2', 'Bug', 'Feature', 'Refactor')
+    `priority` VARCHAR(255) NOT NULL,      -- Task priority (e.g., 'low', 'medium', 'high')
+    `snapshotDate` DATE NOT NULL,          -- The date this task belongs to (YYYY-MM-DD)
+    PRIMARY KEY (`id`),
+    INDEX `idx_snapshotDate` (`snapshotDate`) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- 4. Create the 'daily_snapshots' table
+CREATE TABLE IF NOT EXISTS `daily_snapshots` (
+    `date` DATE NOT NULL,
+    PRIMARY KEY (`date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- 5. Create the 'units' table
+CREATE TABLE IF NOT EXISTS `units` (
+    `name` VARCHAR(255) NOT NULL,          -- e.g., 'UNIT 1', 'Bug', 'Feature'
+    `orderIndex` INT NOT NULL DEFAULT 0,   -- For sorting
+    PRIMARY KEY (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ====================================================================================================
+-- 6. Initial Data for 'units' table
+-- ====================================================================================================
+-- Insert default unit types. `INSERT IGNORE` prevents errors if rows already exist.
+INSERT IGNORE INTO `units` (`name`, `orderIndex`) VALUES
+('Bug', 101),
+('Feature', 102),
+('Refactor', 103),
+('UNIT 1', 1),
+('UNIT 2', 2),
+('UNIT 3', 3),
+('UNIT 4', 4),
+('UNIT 5', 5),
+('UNIT 6', 6),
+('UNIT 7', 7),
+('UNIT 8', 8),
+('UNIT 9', 9),
+('UNIT 10', 10);
